@@ -40,7 +40,7 @@
 
 ### 프론트엔드 앱 실행 명령어
 ```bash
-cd apps/frontend && npm install && npm run dev &
+npm install && npm run dev &
 ```
 
 **상세 실행 단계:**
@@ -69,7 +69,7 @@ npm run dev &
 
 ### 백엔드 앱 실행 명령어
 ```bash
-cd apps/backend && python -m venv venv && source venv/bin/activate && pip install -r requirements.txt && python -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8080 &
+python -m venv venv && source venv/bin/activate && pip install -r requirements.txt && python -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8080 &
 ```
 
 **상세 실행 단계:**
@@ -233,6 +233,9 @@ jobs:
         env:
           POSTGRES_PASSWORD: password
           POSTGRES_DB: mm_matching
+          POSTGRES_USER: postgres
+        ports:
+          - 5432:5432
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
@@ -252,13 +255,67 @@ jobs:
       with:
         python-version: '3.9'
     
+    - name: Wait for PostgreSQL
+      run: |
+        until pg_isready -h localhost -p 5432 -U postgres; do
+          echo "Waiting for PostgreSQL..."
+          sleep 2
+        done
+        
+    - name: Create Database
+      env:
+        PGPASSWORD: password
+      run: |
+        psql -h localhost -U postgres -c "CREATE DATABASE mm_matching;" || true
+    
+    - name: Start Backend
+      env:
+        DATABASE_URL: postgresql://postgres:password@localhost:5432/mm_matching
+        SECRET_KEY: test-secret-key-for-github-actions
+        PYTHONPATH: /home/runner/work/lipcoding-competition/lipcoding-competition/apps/backend
+        PORT: 8080
+        HOST: 0.0.0.0
+        DEBUG: false
+      run: |
+        cd apps/backend
+        echo "Creating virtual environment..."
+        python -m venv venv
+        echo "Activating virtual environment..."
+        source venv/bin/activate
+        echo "Installing requirements..."
+        pip install -r requirements.txt
+        echo "Starting uvicorn server..."
+        nohup python -m uvicorn app.main:app --host 0.0.0.0 --port 8080 --log-level info > server.log 2>&1 &
+        echo "Waiting for server to start..."
+        sleep 15
+        echo "Server log:"
+        cat server.log || echo "No log file found"
+        
+    - name: Check Backend Status
+      run: |
+        echo "Checking if backend is running..."
+        for i in {1..30}; do
+          if curl -f http://localhost:8080/ping; then
+            echo "✅ Backend is running!"
+            break
+          else
+            echo "⏳ Attempt $i: Backend not ready yet..."
+            sleep 2
+          fi
+          if [ $i -eq 30 ]; then
+            echo "❌ Backend failed to start"
+            echo "=== Server Log ==="
+            cat apps/backend/server.log || echo "No server log found"
+            echo "=== Port Status ==="
+            netstat -tlnp | grep :8080 || echo "Port 8080 not in use"
+            echo "=== Process Status ==="
+            ps aux | grep uvicorn || echo "No uvicorn process found"
+            exit 1
+          fi
+        done
+        
     - name: Start Frontend
       run: |
         cd apps/frontend && npm install && npm run dev &
-        
-    - name: Start Backend  
-      env:
-        DATABASE_URL: postgresql://postgres:password@localhost:5432/mm_matching
-      run: |
-        cd apps/backend && python -m venv venv && source venv/bin/activate && pip install -r requirements.txt && python -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8080 &
+        sleep 10
 ```
