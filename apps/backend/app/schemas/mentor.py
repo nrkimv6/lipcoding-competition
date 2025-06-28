@@ -3,12 +3,13 @@
 """
 from pydantic import BaseModel
 from typing import Optional, List
+from app.schemas.common import TimestampSchema
 
 class MentorProfileBase(BaseModel):
     """멘토 프로필 기본 스키마"""
-    experience_years: int
+    experience_years: int = 0
     expertise_areas: List[str] = []
-    availability: str
+    availability: Optional[str] = None
     max_mentees: int = 3
 
 class MentorProfileCreate(MentorProfileBase):
@@ -22,19 +23,15 @@ class MentorProfileUpdate(BaseModel):
     availability: Optional[str] = None
     max_mentees: Optional[int] = None
 
-class MentorProfile(MentorProfileBase):
+class MentorProfileResponse(MentorProfileBase, TimestampSchema):
     """멘토 프로필 응답 스키마"""
     id: int
     user_id: int
 
-    class Config:
-        from_attributes = True
-
 class MenteeProfileBase(BaseModel):
     """멘티 프로필 기본 스키마"""
-    learning_goals: List[str] = []
-    current_level: str
-    preferred_mentor_type: Optional[str] = None
+    learning_goals: Optional[str] = None
+    preferred_mentor_experience: Optional[int] = None
 
 class MenteeProfileCreate(MenteeProfileBase):
     """멘티 프로필 생성 스키마"""
@@ -42,14 +39,10 @@ class MenteeProfileCreate(MenteeProfileBase):
 
 class MenteeProfileUpdate(BaseModel):
     """멘티 프로필 업데이트 스키마"""
-    learning_goals: Optional[List[str]] = None
-    current_level: Optional[str] = None
-    preferred_mentor_type: Optional[str] = None
+    learning_goals: Optional[str] = None
+    preferred_mentor_experience: Optional[int] = None
 
-class MenteeProfile(MenteeProfileBase):
+class MenteeProfileResponse(MenteeProfileBase, TimestampSchema):
     """멘티 프로필 응답 스키마"""
     id: int
     user_id: int
-
-    class Config:
-        from_attributes = True

@@ -1,14 +1,14 @@
 """
 사용자 관련 스키마
 """
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 from typing import Optional, List
 from datetime import datetime
-from app.schemas.common import UserRole
+from app.schemas.common import UserRole, TimestampSchema
 
 class UserBase(BaseModel):
     """사용자 기본 스키마"""
-    email: str
+    email: EmailStr
     name: str
     role: UserRole
     bio: Optional[str] = None
@@ -26,18 +26,14 @@ class UserUpdate(BaseModel):
     skills: Optional[List[str]] = None
     interests: Optional[List[str]] = None
 
-class User(UserBase):
-    """사용자 응답 스키마"""
+class UserResponse(UserBase, TimestampSchema):
+    """사용자 응답 스키마 (비밀번호 제외)"""
     id: int
-    created_at: datetime
     is_active: bool = True
-
-    class Config:
-        from_attributes = True
 
 class UserLogin(BaseModel):
     """로그인 스키마"""
-    email: str
+    email: EmailStr
     password: str
 
 class Token(BaseModel):

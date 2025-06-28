@@ -24,6 +24,14 @@ async def lifespan(app: FastAPI):
     except Exception as e:
         print(f"❌ 데이터베이스 연결 실패: {e}")
     
+    # 테이블 생성 (개발환경에서만)
+    try:
+        from app.database import create_tables
+        create_tables()
+        print("✅ 데이터베이스 테이블 확인/생성 완료!")
+    except Exception as e:
+        print(f"⚠️ 테이블 생성 중 오류: {e}")
+    
     yield
     
     # 애플리케이션 종료 시 실행
