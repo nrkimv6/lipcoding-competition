@@ -132,6 +132,18 @@ uvicorn main:app --reload
 ### 🔍 API 문서
 Backend 실행 후 [http://localhost:8000/docs](http://localhost:8000/docs)에서 Swagger UI 확인
 
+### 💾 PostgreSQL 연결 방법
+```bash
+# Windows PowerShell에서 올바른 연결 방법
+$env:PGPASSWORD="102030"; $env:PGCLIENTENCODING="UTF8"; psql -U postgres -d mm_matching
+
+# 데이터베이스 재생성이 필요한 경우
+$env:PGPASSWORD="102030"; psql -U postgres -c "DROP DATABASE IF EXISTS mm_matching;"
+$env:PGPASSWORD="102030"; psql -U postgres -c "CREATE DATABASE mm_matching;"
+$env:PGPASSWORD="102030"; $env:PGCLIENTENCODING="UTF8"; psql -U postgres -d mm_matching -f db/init.sql
+$env:PGPASSWORD="102030"; $env:PGCLIENTENCODING="UTF8"; psql -U postgres -d mm_matching -f db/seed.sql
+```
+
 ## 🗄️ 데이터베이스 스키마
 
 ### 주요 테이블
@@ -166,12 +178,77 @@ users (1) ──→ (0..n) matches (멘토 응답)
   - API 서버 정상 작동 (포트 8000)
   - JWT 인증, 비밀번호 암호화 설정
 
-- **Database**: PostgreSQL 17 스키마 설계 완료
-  - 사용자, 멘토 프로필, 매칭 테이블 정의
-  - 초기 데이터 스크립트 준비
+- **Database**: PostgreSQL 17 데이터베이스 설정 완료 ✅
+  - `mm_matching` 데이터베이스 생성 완료
+  - 4개 테이블 생성: users, mentor_profiles, mentee_profiles, matchings
+  - 초기 데이터 삽입 완료 (사용자 5명)
 
-### ⚠️ 해결 필요
-- [ ] **데이터베이스 초기화**: `mm_matching` DB 생성 및 스키마 적용
+## 📋 초기 세팅 진행 체크리스트
+
+### ✅ 완료된 세팅
+- [x] 1. `apps/frontend`에서 Next.js 프로젝트 생성
+- [x] 2. `apps/backend`에서 FastAPI 프로젝트 생성  
+- [x] 3. `db/`에 PostgreSQL 관련 스크립트 및 마이그레이션 관리
+- [x] 4. `packages/`에 공통 코드 패키지 초기화
+- [x] 5. 환경 설정 파일(.env) 생성
+- [x] 6. Docker 설정 (docker-compose.yml)
+- [x] 7. 개발 도구 설정 (ESLint, Prettier, pre-commit hooks)
+- [ ] 8. API 문서화 설정
+- [ ] 9. 테스트 환경 구축
+- [ ] 10. CI/CD 파이프라인 구성
+
+### ⚠️ 해결 필요 사항
+
+#### 1. PowerShell 실행 정책 (우선순위: 높음)
+- [x] PowerShell 실행 정책 RemoteSigned로 설정 완료
+
+#### 2. Backend Python 환경 설정 (우선순위: 높음)  
+- [x] Python 3.13.5 설치 확인
+- [x] 가상환경 생성 및 활성화 완료
+- [x] requirements.txt 의존성 설치 완료
+
+#### 3. Git 저장소 관리
+- [x] Git 저장소 초기화 완료
+- [x] .gitignore 파일 설정 완료
+- [x] 초기 커밋 생성 완료 (커밋 해시: ab3367a, 74afc7f)
+- [ ] GitHub 원격 저장소 연결
+
+#### 4. 서비스 실행 테스트 
+- [x] Frontend: `npm run dev` (포트 3000) - 정상 작동 확인
+- [x] Backend: `uvicorn main:app --reload` (포트 8000) - 정상 작동 확인
+- [x] Database: PostgreSQL 연결 및 스키마 적용 완료
+
+#### 5. 보안 취약점 해결
+- [x] Frontend 보안 취약점 해결 완료 (`npm audit fix` 실행됨)
+
+#### 6. Docker 환경 설정 (현재 미사용)
+- ⚠️ **Docker Desktop 미설치**: Redis 컨테이너 실행 불가 (PostgreSQL은 로컬 설치 사용)
+- **대안**: Redis 로컬 설치 또는 Docker Desktop 설치 필요
+- 현재는 개발 환경에서 로컬 PostgreSQL 17 사용 (정상 작동)
+
+#### 7. PostgreSQL 데이터베이스 설정 ✅ 완료
+- [x] PostgreSQL 17 설치 완료
+- [x] PostgreSQL 서비스 시작 완료 (postgresql-x64-17)
+- [x] mm_matching 데이터베이스 생성 완료
+- [x] init.sql 스크립트 실행 (테이블 생성) 완료
+- [x] seed.sql 스크립트 실행 (초기 데이터 삽입) 완료
+- [ ] Backend에서 데이터베이스 연결 테스트
+
+### 💡 다음 단계 권장사항 (Node.js 17, PostgreSQL 17 이미 설치된 환경)
+1. [x] **Node.js 환경 확인** - 이미 설치 완료 (v23.10.0)
+2. [x] **PostgreSQL 환경 확인** - 이미 설치 완료 (v17, 서비스 실행 중)
+3. [x] **프론트엔드 의존성 설치** - `cd apps/frontend && npm install`
+4. [x] **Python 가상환경 설정 및 의존성 설치** 완료
+5. [x] **Git 저장소 초기화 및 초기 커밋** 완료
+6. [ ] ~~GitHub 원격 저장소 연결~~ (보류)
+7. [x] **PostgreSQL 데이터베이스 설정** - 완료 ✅
+8. [ ] **Backend 데이터베이스 연결 테스트** ⬅️ **다음 우선순위**
+9. [ ] **각 서비스 간 연동 테스트** (API 통신)
+10. [ ] **API 엔드포인트 구현** (사용자 인증, 프로필, 매칭)
+11. [ ] **Frontend UI 개발** (로그인, 대시보드, 매칭 페이지)
+
+### ✅ 해결 완료
+- [x] **데이터베이스 초기화**: `mm_matching` DB 생성 및 스키마 적용 완료
 - [ ] **환경 변수 설정**: Backend DB 연결 정보 구성
 - [ ] **Docker 환경**: Redis 컨테이너 설정 (선택사항)
 
