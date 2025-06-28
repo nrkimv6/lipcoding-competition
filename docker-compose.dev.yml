@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  # 개발 환경용 - 데이터베이스만 실행
+  postgres:
+    image: postgres:15
+    container_name: mm-matching-postgres-dev
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-102030}
+      POSTGRES_DB: ${POSTGRES_DB:-mm_matching}
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      - postgres_dev_data:/var/lib/postgresql/data
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - mm-matching-dev-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: mm-matching-redis-dev
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_dev_data:/data
+    networks:
+      - mm-matching-dev-network
+
+volumes:
+  postgres_dev_data:
+  redis_dev_data:
+
+networks:
+  mm-matching-dev-network:
+    driver: bridge
