@@ -10,8 +10,8 @@ load_dotenv()
 class Settings:
     """애플리케이션 설정"""
     
-    # 데이터베이스 설정 - SQLite를 기본값으로 설정
-    DATABASE_URL: str = os.getenv("DATABASE_URL", "sqlite:///./mm_matching.db")
+    # 데이터베이스 설정 - PostgreSQL 기본값
+    DATABASE_URL: str = os.getenv("DATABASE_URL", "postgresql://postgres:password@localhost:5432/mm_matching")
     
     # API 설정
     API_V1_STR: str = "/api/v1"
