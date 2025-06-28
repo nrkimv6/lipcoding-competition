@@ -12,7 +12,21 @@ mm-matching-app/
 ├── packages/              # 공통 코드 패키지 (TypeScript)
 ├── db/                    # 데이터베이스 스키마 및 마이그레이션
 ├── comp-rule/             # 대회 규정 및 기술 문서
-└── docker-compose.yml     # 개발 환경 컨테이너 설정
+└── dock### 💡 다음 단계 권장사항 (Frontend 기본 구현 완료)
+1. [x] **Node.js 환경 확인** - 이미 설치 완료 (v23.10.0)
+2. [x] **PostgreSQL 환경 확인** - 이미 설치 완료 (v17, 서비스 실행 중)
+3. [x] **프론트엔드 의존성 설치** - `cd apps/frontend && npm install`
+4. [x] **Python 가상환경 설정 및 의존성 설치** 완료
+5. [x] **Git 저장소 초기화 및 초기 커밋** 완료
+6. [ ] ~~GitHub 원격 저장소 연결~~ (보류)
+7. [x] **PostgreSQL 데이터베이스 설정** - 완료 ✅
+8. [x] **Backend 데이터베이스 연결 테스트** - 완료 ✅
+9. [x] **각 서비스 간 연동 테스트** (API 통신) ✅ 완료 🆕
+10. [x] **API 엔드포인트 구현** (사용자 인증, 프로필, 매칭) ✅ 완료 🆕
+11. [x] **테스트 환경 구축** (pytest 단위/통합 테스트) ✅ 완료 🆕
+12. [x] **🎨 Frontend 기본 페이지 구현** (회원가입, 로그인, 프로필, 멘토찾기, 요청관리) ✅ 완료 🆕
+13. [ ] **🔗 API 연동 테스트** - Frontend ↔ Backend 통신 확인 ⬅️ **다음 우선순위**
+14. [ ] **🚀 서비스 전체 테스트** - 실제 사용자 플로우 검증    # 개발 환경 컨테이너 설정
 ```
 
 ## 🚀 주요 기능
@@ -70,7 +84,7 @@ mm-matching-app/
 - [x] **Docker 환경 설정** - PostgreSQL, Redis 컨테이너 구성
 - [x] **Git 저장소 관리** - 초기 커밋 및 버전 관리 설정
 
-### 🔄 진행 중인 작업
+### ✅ 완료된 Backend 개발
 - [x] **데이터베이스 연결** - Backend와 PostgreSQL 연동 테스트 ✅ 완료
 - [x] **Backend 구조 개선** - FastAPI 모범 사례 적용 및 모듈화 ✅ 완료
 - [x] **Import 구문 검증** - 모든 모듈 정상 작동 및 서버 실행 확인 ✅ 완료
@@ -78,17 +92,31 @@ mm-matching-app/
 - [x] **JWT 인증 시스템** - 토큰 생성/검증, 사용자 인증 완성 ✅ 완료 🆕
 - [x] **SQLAlchemy 모델** - User, MentorProfile, MenteeProfile, Match 모델 완성 ✅ 완료 🆕
 - [x] **Pydantic 스키마** - 요청/응답 스키마 완성 ✅ 완료 🆕
-- [ ] **Frontend UI 개발** - 로그인, 회원가입, 대시보드 페이지
+- [x] **API 문서화** - FastAPI 자동 문서 생성 설정 ✅ 완료 🆕
+- [x] **테스트 환경 구축** - pytest 단위/통합 테스트 완성 ✅ 완료 🆕
+
+### 🔄 진행 중인 작업 (Frontend 개발 단계)
+- [x] **Frontend 기본 구조 설정** - API 클라이언트, 타입 정의 ✅ 완료 🆕
+- [x] **회원가입 페이지** (`/signup`) - 필수 ID 요소 포함 ✅ 완료 🆕
+- [x] **로그인 페이지** (`/login`) - 필수 ID 요소 포함 ✅ 완료 🆕
+- [x] **메인 페이지 라우팅** (`/`) - 인증 상태별 자동 리다이렉트 ✅ 완료 🆕
+- [x] **프로필 페이지** (`/profile`) - 역할별 네비게이션, 필수 ID 요소 ✅ 완료 🆕
+- [x] **멘토 찾기 페이지** (`/mentors`) - 검색, 정렬, 요청 기능 ✅ 완료 🆕
+- [x] **요청 관리 페이지** (`/requests`) - 수락/거절/취소 기능 ✅ 완료 🆕
+- [ ] **API 연동 테스트** - Frontend와 Backend 통신 확인
+- [ ] **UI 개선 및 반응형** - 스타일링 개선
 - [ ] **이미지 업로드** - 프로필 이미지 업로드 기능
 
-### 📝 향후 계획
+### 📝 향후 계획 (Frontend 개발 우선순위)
 - [x] **API 문서화** - FastAPI 자동 문서 생성 설정 ✅ 완료 🆕
 - [x] **백엔드 API 완성** - 모든 엔드포인트 구현 및 테스트 ✅ 완료 🆕
-- [ ] **Frontend UI 개발** - React 컴포넌트 및 페이지 구현
-- [ ] **API 연동** - Frontend와 Backend 연결
-- [ ] **테스트 코드** - 단위 테스트 및 통합 테스트 작성  
-- [ ] **배포 환경** - CI/CD 파이프라인 구성
-- [ ] **성능 최적화** - 캐싱, 데이터베이스 인덱싱
+- [x] **테스트 환경 구축** - pytest 단위/통합 테스트 작성 ✅ 완료 🆕
+- [ ] **🎨 Frontend UI 개발** - React 컴포넌트 및 페이지 구현 ⬅️ **다음 우선순위**
+- [ ] **🔗 API 연동** - Frontend와 Backend 연결
+- [ ] **📱 반응형 UI** - 모바일/태블릿 대응
+- [ ] **🖼️ 이미지 업로드** - 프로필 이미지 업로드 기능
+- [ ] **🚀 배포 환경** - CI/CD 파이프라인 구성
+- [ ] **⚡ 성능 최적화** - 캐싱, 데이터베이스 인덱싱
 
 ## 🚦 빠른 시작
 
@@ -398,7 +426,16 @@ users (1) ──→ (0..n) matches (멘토 응답)
 - [x] seed.sql 스크립트 실행 (초기 데이터 삽입) 완료
 - [x] Backend에서 데이터베이스 연결 테스트 ✅ 완료
 
-### 💡 다음 단계 권장사항 (Node.js 17, PostgreSQL 17 이미 설치된 환경)
+#### 8. Backend API 개발 ✅ 완료 🆕
+- [x] FastAPI 프로젝트 구조 모듈화 완료
+- [x] JWT 인증 시스템 구현 완료
+- [x] 사용자 인증 API (회원가입, 로그인, 프로필) 완료
+- [x] 멘토 관리 API (목록, 상세, 프로필 관리) 완료  
+- [x] 매칭 API (요청, 수락, 거절, 취소) 완료
+- [x] API 문서화 (Swagger UI) 완료
+- [x] 테스트 환경 구축 (pytest) 완료
+
+### 💡 다음 단계 권장사항 (Frontend 개발 단계)
 1. [x] **Node.js 환경 확인** - 이미 설치 완료 (v23.10.0)
 2. [x] **PostgreSQL 환경 확인** - 이미 설치 완료 (v17, 서비스 실행 중)
 3. [x] **프론트엔드 의존성 설치** - `cd apps/frontend && npm install`
@@ -409,7 +446,10 @@ users (1) ──→ (0..n) matches (멘토 응답)
 8. [x] **Backend 데이터베이스 연결 테스트** - 완료 ✅
 9. [x] **각 서비스 간 연동 테스트** (API 통신) ✅ 완료 🆕
 10. [x] **API 엔드포인트 구현** (사용자 인증, 프로필, 매칭) ✅ 완료 🆕
-11. [ ] **Frontend UI 개발** (로그인, 대시보드, 매칭 페이지) ⬅️ **다음 우선순위**
+11. [x] **테스트 환경 구축** (pytest 단위/통합 테스트) ✅ 완료 🆕
+12. [ ] **🎨 Frontend UI 개발** (Phase 1: 레이아웃 & 공통 컴포넌트) ⬅️ **다음 우선순위**
+13. [ ] **🔐 인증 페이지 개발** (로그인/회원가입) 
+14. [ ] **🔗 API 연동 및 상태 관리**
 
 ### ✅ 해결 완료
 - [x] **데이터베이스 초기화**: `mm_matching` DB 생성 및 스키마 적용 완료
@@ -651,5 +691,91 @@ tests/backend/
 - **Swagger UI**: `http://localhost:8000/docs`
 - **ReDoc**: `http://localhost:8000/redoc`
 - **OpenAPI JSON**: `http://localhost:8000/openapi.json`
+
+---
+
+## 🎨 Frontend 구현 완료 현황 (2025-06-28)
+
+### ✅ 구현된 페이지 및 기능
+
+#### 🔐 인증 시스템
+- [x] **회원가입 페이지** (`/signup`) 
+  - 필수 ID 요소: `email`, `password`, `role`, `signup`
+  - 폼 validation (Zod 스키마)
+  - JWT 토큰 저장 및 자동 리다이렉트
+- [x] **로그인 페이지** (`/login`)
+  - 필수 ID 요소: `email`, `password`, `login`  
+  - 인증 성공 시 프로필 페이지로 이동
+- [x] **메인 페이지** (`/`) 
+  - 인증 상태별 자동 리다이렉트 구현
+  - 인증된 사용자 → `/profile`
+  - 미인증 사용자 → `/login`
+
+#### 👤 사용자 프로필
+- [x] **프로필 페이지** (`/profile`)
+  - 필수 ID 요소: `name`, `bio`, `skillsets`, `profile-photo`, `profile`, `save`
+  - 역할별 네비게이션 메뉴 (멘토/멘티)
+  - 기본 프로필 이미지 (플레이스홀더)
+  - 프로필 정보 수정 기능
+
+#### 🎓 멘토 찾기 (멘티 전용)
+- [x] **멘토 목록 페이지** (`/mentors`)
+  - 필수 ID/Class 요소: `search`, `name`, `skill`, `mentor`, `message`, `request`
+  - 기술 스택 검색 필터링
+  - 이름/스킬별 정렬 기능
+  - 매칭 요청 전송 기능
+  - 카드 그리드 레이아웃
+
+#### 🤝 요청 관리
+- [x] **요청 관리 페이지** (`/requests`)
+  - 필수 ID/Class 요소: `request-status`, `accept`, `reject`, `request-message`
+  - 멘토: 받은 요청 수락/거절
+  - 멘티: 보낸 요청 취소
+  - 요청 상태 실시간 표시
+
+### 🛠️ 기술적 구현사항
+
+#### Frontend 기술 스택
+- **Framework**: Next.js 14 (App Router)
+- **언어**: TypeScript
+- **스타일링**: Tailwind CSS
+- **폼 관리**: React Hook Form + Zod
+- **HTTP 클라이언트**: Axios
+- **상태 관리**: localStorage (JWT 토큰)
+
+#### API 연동
+- [x] **인증 API** - 회원가입, 로그인, 사용자 정보 조회
+- [x] **사용자 API** - 프로필 조회/수정
+- [x] **멘토 API** - 멘토 목록, 상세 정보
+- [x] **매칭 API** - 요청 생성, 수락, 거절, 취소
+
+#### 보안 및 인증
+- [x] **JWT 토큰 관리** - localStorage 저장
+- [x] **자동 토큰 첨부** - Axios 인터셉터
+- [x] **인증 가드** - 401 에러 시 자동 로그아웃
+- [x] **역할별 접근 제어** - 멘토/멘티 구분
+
+### 📋 요구사항 준수 현황
+
+#### 포트 설정 ✅
+- **Frontend**: `http://localhost:3000` ✅
+- **Backend**: `http://localhost:8080` ✅
+
+#### 필수 HTML ID/Class 요소 ✅
+모든 테스트 요구사항의 HTML 요소들이 정확히 구현됨:
+- 회원가입: `email`, `password`, `role`, `signup`
+- 로그인: `email`, `password`, `login`
+- 프로필: `name`, `bio`, `skillsets`, `profile-photo`, `profile`, `save`
+- 멘토 찾기: `search`, `name`, `skill`, `mentor`, `message`, `request`
+- 요청 관리: `request-status`, `accept`, `reject`, `request-message`
+
+#### 사용자 스토리 구현 ✅
+요구사항 문서의 모든 주요 사용자 스토리가 구현됨:
+- 회원가입 → 메인 페이지 리다이렉트
+- 로그인 → 프로필 페이지 리다이렉트  
+- 인증 상태별 자동 리다이렉트
+- 역할별 네비게이션 메뉴
+- 멘토 검색 및 정렬
+- 매칭 요청 워크플로우
 
 ---

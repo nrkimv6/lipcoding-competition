@@ -9,6 +9,7 @@ from sqlalchemy import text
 from app.config import settings
 from app.database import engine
 from app.api.v1 import api_router
+from app.api.v1.auth import router as auth_router
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -61,6 +62,9 @@ def create_app() -> FastAPI:
 
     # API 라우터 등록
     app.include_router(api_router, prefix=settings.API_V1_STR)
+    
+    # 테스트 호환을 위한 추가 엔드포인트
+    app.include_router(auth_router, prefix="/api", tags=["테스트 호환"])
 
     # 기본 엔드포인트
     @app.get("/")

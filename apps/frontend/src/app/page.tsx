@@ -1,29 +1,31 @@
+'use client';
+
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+
 export default function Home() {
+  const router = useRouter();
+
+  useEffect(() => {
+    // 요구사항: "/" 페이지에서 인증 상태에 따른 자동 리다이렉트
+    const token = localStorage.getItem('token');
+    
+    if (token) {
+      // 인증된 사용자는 /profile 페이지로 리다이렉트
+      router.push('/profile');
+    } else {
+      // 인증되지 않은 사용자는 /login 페이지로 리다이렉트
+      router.push('/login');
+    }
+  }, [router]);
+
+  // 리다이렉트 처리 중 로딩 화면
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <h1 className="text-4xl font-bold text-center sm:text-left">
-          MM Matching App
-        </h1>
-        <p className="text-lg text-center sm:text-left">
-          멘토-멘티 매칭 서비스에 오신 것을 환영합니다!
-        </p>
-        
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <button className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5">
-            멘토 등록
-          </button>
-          <button className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44">
-            멘티 찾기
-          </button>
-        </div>
-      </main>
-      
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <p className="text-sm text-gray-600">
-          © 2025 MM Matching App. All rights reserved.
-        </p>
-      </footer>
+    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="text-center">
+        <h1 className="text-2xl font-bold text-gray-900 mb-4">MM Matching</h1>
+        <p className="text-gray-600">로딩 중...</p>
+      </div>
     </div>
   );
 }

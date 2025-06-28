@@ -102,3 +102,12 @@ async def get_current_user_info(
 async def logout():
     """사용자 로그아웃 (클라이언트에서 토큰 삭제)"""
     return {"message": "성공적으로 로그아웃되었습니다"}
+
+# 테스트 호환을 위한 signup 엔드포인트 (register와 동일)
+@router.post("/signup", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
+async def signup(
+    user_data: RegisterRequest,
+    db: Annotated[Session, Depends(get_db)]
+):
+    """사용자 회원가입 (테스트 호환용)"""
+    return await register(user_data, db)

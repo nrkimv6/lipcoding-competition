@@ -10,8 +10,8 @@ load_dotenv()
 class Settings:
     """애플리케이션 설정"""
     
-    # 데이터베이스 설정
-    DATABASE_URL: str = os.getenv("DATABASE_URL", "")
+    # 데이터베이스 설정 - SQLite를 기본값으로 설정
+    DATABASE_URL: str = os.getenv("DATABASE_URL", "sqlite:///./mm_matching.db")
     
     # API 설정
     API_V1_STR: str = "/api/v1"
@@ -27,17 +27,13 @@ class Settings:
     ALLOWED_ORIGINS: list = ["http://localhost:3000"]
     
     # JWT 설정
-    SECRET_KEY: str = os.getenv("SECRET_KEY", "your-secret-key-here")
+    SECRET_KEY: str = os.getenv("SECRET_KEY", "mm-matching-secret-key-2024")
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     
     # 데이터베이스 연결 설정
     DB_POOL_PRE_PING: bool = True
     DB_POOL_RECYCLE: int = 300
-    DB_ECHO: bool = True  # 개발환경에서만 True
-    
-    def __init__(self):
-        if not self.DATABASE_URL:
-            raise ValueError("DATABASE_URL 환경변수가 설정되지 않았습니다.")
+    DB_ECHO: bool = False  # 테스트에서는 False로 설정
 
 settings = Settings()
