@@ -132,17 +132,169 @@ uvicorn main:app --reload
 ### 🔍 API 문서
 Backend 실행 후 [http://localhost:8000/docs](http://localhost:8000/docs)에서 Swagger UI 확인
 
-### 💾 PostgreSQL 연결 방법
-```bash
-# Windows PowerShell에서 올바른 연결 방법
-$env:PGPASSWORD="102030"; $env:PGCLIENTENCODING="UTF8"; psql -U postgres -d mm_matching
+## 🛠️ 개발 참고사항 & 트러블슈팅
 
-# 데이터베이스 재생성이 필요한 경우
+### 🐍 Python 가상환경 관리
+
+#### 가상환경 활성화 확인
+```bash
+# 가상환경이 활성화되었는지 확인 (프롬프트에 (venv) 표시)
+# Windows PowerShell
+venv\Scripts\activate
+
+# 활성화된 Python 경로 확인
+where python
+# 출력 예: D:\mm-matching-app\apps\backend\venv\Scripts\python.exe
+```
+
+#### pip 경로 명시 사용법
+```bash
+# 문제: 가상환경에서 pip 설치가 안 될 때
+# 해결: 가상환경의 pip 경로를 직접 명시
+
+# 방법 1: 상대경로 사용
+venv\Scripts\pip install sqlalchemy psycopg2-binary python-dotenv
+
+# 방법 2: 절대경로 사용 (확실한 방법)
+D:\mm-matching-app\apps\backend\venv\Scripts\pip install -r requirements.txt
+
+# 패키지 설치 확인
+venv\Scripts\pip list
+```
+
+#### 패키지 설치 문제 해결
+```bash
+# 1. 개별 패키지 설치 (requirements.txt 실패 시)
+venv\Scripts\pip install fastapi uvicorn sqlalchemy psycopg2-binary python-dotenv
+
+# 2. 캐시 클리어 후 재설치
+venv\Scripts\pip install --no-cache-dir -r requirements.txt
+
+# 3. pip 업그레이드
+venv\Scripts\pip install --upgrade pip
+```
+
+### 💾 PostgreSQL 연결 관리
+
+#### 환경변수 설정 방법
+```bash
+# PowerShell에서 PostgreSQL 비밀번호 설정
+$env:PGPASSWORD="102030"
+$env:PGCLIENTENCODING="UTF8"
+
+# 데이터베이스 연결 (비밀번호 입력 없이)
+psql -U postgres -d mm_matching
+
+# 한 줄로 실행
+$env:PGPASSWORD="102030"; $env:PGCLIENTENCODING="UTF8"; psql -U postgres -d mm_matching
+```
+
+#### 데이터베이스 상태 확인
+```bash
+# 테이블 목록 확인
+psql -U postgres -d mm_matching -c "\dt"
+
+# 사용자 데이터 확인
+psql -U postgres -d mm_matching -c "SELECT COUNT(*) FROM users;"
+
+# 데이터베이스 재생성 (초기화)
 $env:PGPASSWORD="102030"; psql -U postgres -c "DROP DATABASE IF EXISTS mm_matching;"
 $env:PGPASSWORD="102030"; psql -U postgres -c "CREATE DATABASE mm_matching;"
-$env:PGPASSWORD="102030"; $env:PGCLIENTENCODING="UTF8"; psql -U postgres -d mm_matching -f db/init.sql
-$env:PGPASSWORD="102030"; $env:PGCLIENTENCODING="UTF8"; psql -U postgres -d mm_matching -f db/seed.sql
 ```
+
+### 🚀 서비스 실행 & 디버깅
+
+#### Backend 실행 방법
+```bash
+# 방법 1: uvicorn 직접 실행
+cd apps/backend
+venv\Scripts\activate
+uvicorn main:app --reload --host 0.0.0.0 --port 8000
+
+# 방법 2: Python으로 실행
+python main.py
+
+# 방법 3: 디버그 모드 (상세한 로그)
+uvicorn main:app --reload --log-level debug
+```
+
+#### API 테스트 엔드포인트
+```bash
+# 기본 연결 테스트
+curl http://localhost:8000/
+
+# 헬스체크
+curl http://localhost:8000/health
+
+# 데이터베이스 연결 테스트
+curl http://localhost:8000/api/v1/db-test
+```
+
+### 📦 패키지 관리
+
+#### requirements.txt 관리
+```bash
+# 현재 설치된 패키지 확인
+venv\Scripts\pip list
+
+# requirements.txt 업데이트
+venv\Scripts\pip freeze > requirements.txt
+
+# 특정 패키지 버전 확인
+venv\Scripts\pip show sqlalchemy
+```
+
+#### 자주 사용하는 개발 패키지
+```txt
+# 필수 패키지
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+sqlalchemy==2.0.23
+psycopg2-binary==2.9.9
+python-dotenv==1.0.0
+
+# 개발 도구
+pytest==7.4.3
+black==23.11.0
+isort==5.12.0
+```
+
+### 🔧 개발 환경 점검 체크리스트
+
+```bash
+# 1. Python 환경 확인
+python --version  # Python 3.9+ 필요
+
+# 2. 가상환경 활성화 확인
+echo $env:VIRTUAL_ENV  # 가상환경 경로 출력되어야 함
+
+# 3. PostgreSQL 서비스 확인
+Get-Service postgresql*  # 서비스 실행 상태 확인
+
+# 4. 포트 사용 확인
+netstat -an | findstr :8000  # Backend 포트
+netstat -an | findstr :3000  # Frontend 포트
+netstat -an | findstr :5432  # PostgreSQL 포트
+```
+
+### ⚠️ 자주 발생하는 문제 & 해결책
+
+| 문제 | 원인 | 해결책 |
+|------|------|--------|
+| `ModuleNotFoundError: No module named 'sqlalchemy'` | 가상환경에 패키지 미설치 | `venv\Scripts\pip install sqlalchemy` |
+| `FATAL: password authentication failed` | PostgreSQL 비밀번호 오류 | `$env:PGPASSWORD="102030"` 설정 |
+| `Port 8000 is already in use` | 포트 충돌 | 기존 프로세스 종료 또는 다른 포트 사용 |
+| `Connection refused` | PostgreSQL 서비스 중단 | `Start-Service postgresql*` |
+| pip 설치 실패 | 권한 또는 경로 문제 | 가상환경 pip 절대경로 사용 |
+
+### 💡 개발 팁
+
+1. **환경변수 자동 설정**: `.bashrc` 또는 PowerShell 프로필에 자주 사용하는 환경변수 등록
+2. **자동 활성화**: VS Code에서 Python 인터프리터를 가상환경으로 설정하면 터미널에서 자동 활성화
+3. **데이터베이스 백업**: 개발 중 데이터 손실 방지를 위한 정기적인 덤프 생성
+4. **로그 모니터링**: `--log-level debug` 옵션으로 상세한 로그 확인
+
+---
 
 ## 🗄️ 데이터베이스 스키마
 
