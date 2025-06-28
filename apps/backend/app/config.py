@@ -19,6 +19,10 @@ class Settings:
     PROJECT_VERSION: str = "1.0.0"
     PROJECT_DESCRIPTION: str = "멘토-멘티 매칭 서비스 API"
     
+    # 서버 설정
+    HOST: str = "0.0.0.0"
+    PORT: int = int(os.getenv("PORT", "8080"))
+    
     # CORS 설정
     ALLOWED_ORIGINS: list = ["http://localhost:3000"]
     

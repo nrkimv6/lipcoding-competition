@@ -43,7 +43,11 @@ def create_app() -> FastAPI:
         title=settings.PROJECT_NAME,
         description=settings.PROJECT_DESCRIPTION,
         version=settings.PROJECT_VERSION,
-        lifespan=lifespan
+        lifespan=lifespan,
+        # OpenAPI 문서 경로 설정
+        docs_url="/docs",  # Swagger UI 경로
+        redoc_url="/redoc",  # ReDoc 경로  
+        openapi_url="/openapi.json"  # OpenAPI JSON 경로
     )
 
     # CORS 설정

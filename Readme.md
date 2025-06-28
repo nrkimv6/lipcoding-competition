@@ -60,8 +60,7 @@ npm run dev &
 ## ⚙️ 백엔드 앱 정보
 
 ### 백엔드 앱 기본 URL
-⚠️ **주의**: 제출 템플릿에서는 `http://localhost:8080/api`로 되어 있지만, 
-**실제 구현된 백엔드 URL은 `http://localhost:8000/api`입니다.**
+✅ **백엔드 앱 기본 URL은 `http://localhost:8080/api`입니다.**
 
 ### 백엔드 앱 경로
 ```
@@ -70,7 +69,7 @@ npm run dev &
 
 ### 백엔드 앱 실행 명령어
 ```bash
-cd apps/backend && python -m venv venv && source venv/bin/activate && pip install -r requirements.txt && python -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8000 &
+cd apps/backend && python -m venv venv && source venv/bin/activate && pip install -r requirements.txt && python -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8080 &
 ```
 
 **상세 실행 단계:**
@@ -88,17 +87,17 @@ source venv/bin/activate
 pip install -r requirements.txt
 
 # 5. 서버 실행 (백그라운드)
-python -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8000 &
+python -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8080 &
 ```
 
 ### Swagger UI URL
 ```
-http://localhost:8000/docs
+http://localhost:8080/docs
 ```
 
 ### OpenAPI 문서 URL
 ```
-http://localhost:8000/openapi.json
+http://localhost:8080/openapi.json
 ```
 
 ---
@@ -181,9 +180,9 @@ psql -U postgres -c "CREATE DATABASE mm_matching;"
 
 ## 🚨 중요 참고사항
 
-1. **포트 번호 차이**: 
-   - 제출 템플릿: `8080/api`
-   - 실제 구현: `8000/api`
+1. **포트 설정**: 
+   - 제출 템플릿과 동일하게 `8080` 포트 사용 ✅
+   - API 경로: `/api/v1/` ✅
 
 2. **백그라운드 실행**: 
    - 명령어 끝에 `&` 추가하여 백그라운드 실행
@@ -261,5 +260,5 @@ jobs:
       env:
         DATABASE_URL: postgresql://postgres:password@localhost:5432/mm_matching
       run: |
-        cd apps/backend && python -m venv venv && source venv/bin/activate && pip install -r requirements.txt && python -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8000 &
+        cd apps/backend && python -m venv venv && source venv/bin/activate && pip install -r requirements.txt && python -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8080 &
 ```
