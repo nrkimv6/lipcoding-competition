@@ -63,6 +63,7 @@ mm-matching-app/
 - [x] **프로젝트 구조 설정** - 모노레포 구조 및 워크스페이스 구성
 - [x] **Frontend 환경 구축** - Next.js 14 + TypeScript + Tailwind CSS
 - [x] **Backend 환경 구축** - FastAPI + SQLAlchemy + PostgreSQL 드라이버
+- [x] **Backend 폴더 구조 개선** - FastAPI 모범 사례에 따른 모듈화 구조 🆕
 - [x] **공통 패키지 설정** - TypeScript 타입 시스템 및 유틸리티
 - [x] **데이터베이스 스키마** - 사용자, 멘토 프로필, 매칭 테이블 설계
 - [x] **개발 도구 설정** - ESLint, Prettier, TypeScript 설정
@@ -71,7 +72,9 @@ mm-matching-app/
 
 ### 🔄 진행 중인 작업
 - [x] **데이터베이스 연결** - Backend와 PostgreSQL 연동 테스트 ✅ 완료
-- [ ] **API 엔드포인트 구현** - 사용자 인증, 프로필, 매칭 API
+- [x] **Backend 구조 개선** - FastAPI 모범 사례 적용 및 모듈화 ✅ 완료
+- [x] **Import 구문 검증** - 모든 모듈 정상 작동 및 서버 실행 확인 ✅ 완료
+- [ ] **API 엔드포인트 구현** - 사용자 인증, 프로필, 매칭 API (기본 골격 완료 🆕)
 - [ ] **Frontend UI 개발** - 로그인, 회원가입, 대시보드 페이지
 - [ ] **이미지 업로드** - 프로필 이미지 업로드 기능
 
@@ -457,4 +460,140 @@ psql -U postgres -d mm_matching -f db/init.sql
 
 ---
 
-> 💡 **개발 환경 준비 완료!** 이제 API 구현과 UI 개발을 시작할 수 있습니다.
+## 🧪 테스트 구조
+
+### 📁 테스트 폴더 구조
+```
+tests/
+├── backend/                  # 🐍 Backend 테스트
+│   ├── conftest.py          # pytest 설정 및 픽스처
+│   ├── unit/                # 단위 테스트
+│   │   ├── test_api.py      # API 엔드포인트 테스트
+│   │   └── test_models.py   # 데이터베이스 모델 테스트
+│   ├── integration/         # 통합 테스트
+│   │   ├── test_db_connection.py      # DB 연결 및 CRUD 테스트
+│   │   └── test_api_integration.py    # API 워크플로우 테스트
+│   └── utils/               # 테스트 유틸리티
+│       ├── db_utils.py      # DB 테스트 헬퍼
+│       └── fixtures.py      # 테스트 데이터
+├── frontend/                # ⚛️ Frontend 테스트 (예정)
+└── e2e/                     # 🔄 End-to-End 테스트 (예정)
+```
+
+### 🏃 테스트 실행 방법
+
+#### Windows (PowerShell/CMD)
+```bash
+# 모든 테스트 실행
+run_tests.bat all
+
+# 단위 테스트만 실행
+run_tests.bat unit
+
+# 통합 테스트만 실행  
+run_tests.bat integration
+
+# 백엔드 전체 테스트
+run_tests.bat backend
+
+# 기존 테스트 (호환성)
+run_tests.bat legacy
+
+# 데이터베이스 연결만 체크
+run_tests.bat db-check
+```
+
+#### 직접 pytest 실행
+```bash
+# 가상환경 활성화 필요
+apps\backend\venv\Scripts\activate
+
+# 전체 테스트
+python -m pytest tests/ -v
+
+# 특정 테스트 파일
+python -m pytest tests/backend/unit/test_api.py -v
+
+# 특정 테스트 함수
+python -m pytest tests/backend/unit/test_api.py::test_health_check -v
+
+# 마커별 테스트
+python -m pytest -m "unit" -v          # 단위 테스트만
+python -m pytest -m "integration" -v   # 통합 테스트만
+python -m pytest -m "db" -v           # DB 관련 테스트만
+```
+
+### 📊 테스트 현황
+- ✅ **pytest 환경 구성 완료** - conftest.py, pytest.ini 설정
+- ✅ **기본 API 테스트** - health check, 기본 엔드포인트
+- ✅ **데이터베이스 연결 테스트** - PostgreSQL 연결 및 CRUD 검증
+- ✅ **테스트 유틸리티** - DB 헬퍼, 픽스처, 샘플 데이터
+- 🔄 **API 통합 테스트** - 인증, 매칭 워크플로우 (예정)
+- 🔄 **모델 단위 테스트** - SQLAlchemy 모델 검증 (예정)
+
+---
+
+## 🧹 폴더 정리 완료
+
+#### ✅ 정리된 항목
+- **폴더 구조 개선**: FastAPI 모범 사례에 따른 모듈화 구조 적용 🆕
+- **API 라우터 분리**: 인증, 사용자, 멘토, 매칭별 라우터 분리 🆕
+- **스키마 모듈화**: 도메인별 Pydantic 스키마 분리 🆕
+- **설정 관리**: 중앙화된 설정 파일 구성 🆕
+- **백업 폴더 정리**: .old 파일들을 backup 폴더로 이동 🆕
+- **conf 폴더 생성**: 설정 관련 파일 분리 (.env.example) 🆕
+- **Import 구문 검증**: 모든 모듈 import 정상 작동 확인 🆕
+- **기존 테스트 파일 제거**: `apps/backend/test_*.py` 파일들을 새로운 구조로 마이그레이션
+- **독립 스크립트 분리**: `scripts/db_check.py` - 스탠드얼론 DB 연결 테스트 도구
+- **중복 제거**: 동일한 기능의 테스트 코드 통합 및 정리
+
+#### 📂 현재 백엔드 폴더 구조
+```
+apps/backend/
+├── app/                    # 메인 애플리케이션 패키지 🆕
+│   ├── __init__.py        # 패키지 초기화
+│   ├── main.py            # FastAPI 앱 인스턴스
+│   ├── config.py          # 설정 관리 🆕
+│   ├── database.py        # DB 연결 설정
+│   ├── dependencies.py    # 공통 의존성 (예정)
+│   ├── api/               # API 라우터 🆕
+│   │   ├── __init__.py
+│   │   └── v1/           # API 버전 1
+│   │       ├── __init__.py
+│   │       ├── auth.py   # 인증 관련 API 🆕
+│   │       ├── users.py  # 사용자 관리 API 🆕
+│   │       ├── mentors.py # 멘토 관리 API 🆕
+│   │       └── matches.py # 매칭 관리 API 🆕
+│   ├── models/            # SQLAlchemy 모델 (예정) 🆕
+│   │   └── __init__.py
+│   ├── schemas/           # Pydantic 스키마 🆕
+│   │   ├── __init__.py
+│   │   ├── common.py     # 공통 스키마 (Enum) 🆕
+│   │   ├── user.py       # 사용자 스키마 🆕
+│   │   ├── mentor.py     # 멘토 스키마 🆕
+│   │   └── match.py      # 매칭 스키마 🆕
+│   ├── services/          # 비즈니스 로직 (예정) 🆕
+│   │   └── __init__.py
+│   └── utils/            # 유틸리티 함수 (예정) 🆕
+│       └── __init__.py
+├── backup/               # 백업 파일 🆕
+│   ├── database.py.old   # 기존 DB 설정 백업
+│   └── schemas.py.old    # 기존 스키마 백업
+├── conf/                 # 설정 파일 🆕
+│   └── .env.example      # 환경변수 예제
+├── scripts/              # 관리 스크립트 🆕
+│   └── db_check.py      # DB 연결 테스트 도구
+├── main.py              # 앱 실행 진입점
+├── requirements.txt     # Python 의존성
+├── .env                 # 환경변수
+└── venv/               # 가상환경
+```
+
+#### 🧪 새로운 테스트 구조
+```
+tests/backend/
+├── conftest.py         # pytest 설정
+├── unit/              # 단위 테스트 (10개)
+├── integration/       # 통합 테스트 (7개)
+└── utils/             # 테스트 유틸리티
+```

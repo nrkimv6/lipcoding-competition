@@ -15,6 +15,9 @@ apps/frontend/node_modules/
 packages/node_modules/
 
 # Python 관련
+**/__pycache__/
+*.py[cod]
+*$py.class
 apps/backend/venv/
 apps/backend/__pycache__/
 apps/backend/*.pyc
