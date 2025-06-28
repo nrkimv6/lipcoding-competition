@@ -74,12 +74,18 @@ mm-matching-app/
 - [x] **데이터베이스 연결** - Backend와 PostgreSQL 연동 테스트 ✅ 완료
 - [x] **Backend 구조 개선** - FastAPI 모범 사례 적용 및 모듈화 ✅ 완료
 - [x] **Import 구문 검증** - 모든 모듈 정상 작동 및 서버 실행 확인 ✅ 완료
-- [ ] **API 엔드포인트 구현** - 사용자 인증, 프로필, 매칭 API (기본 골격 완료 🆕)
+- [x] **API 엔드포인트 구현** - 사용자 인증, 프로필, 매칭 API 완성 ✅ 완료 🆕
+- [x] **JWT 인증 시스템** - 토큰 생성/검증, 사용자 인증 완성 ✅ 완료 🆕
+- [x] **SQLAlchemy 모델** - User, MentorProfile, MenteeProfile, Match 모델 완성 ✅ 완료 🆕
+- [x] **Pydantic 스키마** - 요청/응답 스키마 완성 ✅ 완료 🆕
 - [ ] **Frontend UI 개발** - 로그인, 회원가입, 대시보드 페이지
 - [ ] **이미지 업로드** - 프로필 이미지 업로드 기능
 
 ### 📝 향후 계획
-- [ ] **API 문서화** - FastAPI 자동 문서 생성 설정
+- [x] **API 문서화** - FastAPI 자동 문서 생성 설정 ✅ 완료 🆕
+- [x] **백엔드 API 완성** - 모든 엔드포인트 구현 및 테스트 ✅ 완료 🆕
+- [ ] **Frontend UI 개발** - React 컴포넌트 및 페이지 구현
+- [ ] **API 연동** - Frontend와 Backend 연결
 - [ ] **테스트 코드** - 단위 테스트 및 통합 테스트 작성  
 - [ ] **배포 환경** - CI/CD 파이프라인 구성
 - [ ] **성능 최적화** - 캐싱, 데이터베이스 인덱싱
@@ -209,16 +215,19 @@ $env:PGPASSWORD="102030"; psql -U postgres -c "CREATE DATABASE mm_matching;"
 
 #### Backend 실행 방법
 ```bash
-# 방법 1: uvicorn 직접 실행
+# 방법 1: 가상환경 절대경로 사용 (권장)
+D:\mm-matching-app\apps\backend\venv\Scripts\python.exe -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+
+# 방법 2: uvicorn 직접 실행
 cd apps/backend
 venv\Scripts\activate
-uvicorn main:app --reload --host 0.0.0.0 --port 8000
+uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 
-# 방법 2: Python으로 실행
-python main.py
+# 방법 3: Python으로 실행
+D:\mm-matching-app\apps\backend\venv\Scripts\python.exe main.py
 
-# 방법 3: 디버그 모드 (상세한 로그)
-uvicorn main:app --reload --log-level debug
+# 방법 4: 디버그 모드 (상세한 로그)
+D:\mm-matching-app\apps\backend\venv\Scripts\python.exe -m uvicorn app.main:app --reload --log-level debug
 ```
 
 #### API 테스트 엔드포인트
@@ -398,9 +407,9 @@ users (1) ──→ (0..n) matches (멘토 응답)
 6. [ ] ~~GitHub 원격 저장소 연결~~ (보류)
 7. [x] **PostgreSQL 데이터베이스 설정** - 완료 ✅
 8. [x] **Backend 데이터베이스 연결 테스트** - 완료 ✅
-9. [ ] **각 서비스 간 연동 테스트** (API 통신) ⬅️ **다음 우선순위**
-10. [ ] **API 엔드포인트 구현** (사용자 인증, 프로필, 매칭)
-11. [ ] **Frontend UI 개발** (로그인, 대시보드, 매칭 페이지)
+9. [x] **각 서비스 간 연동 테스트** (API 통신) ✅ 완료 🆕
+10. [x] **API 엔드포인트 구현** (사용자 인증, 프로필, 매칭) ✅ 완료 🆕
+11. [ ] **Frontend UI 개발** (로그인, 대시보드, 매칭 페이지) ⬅️ **다음 우선순위**
 
 ### ✅ 해결 완료
 - [x] **데이터베이스 초기화**: `mm_matching` DB 생성 및 스키마 적용 완료
@@ -597,3 +606,50 @@ tests/backend/
 ├── integration/       # 통합 테스트 (7개)
 └── utils/             # 테스트 유틸리티
 ```
+
+## 🎯 API 구현 완료 현황 (2025-01-28)
+
+### ✅ 완성된 API 엔드포인트
+
+#### 🔐 인증 API (`/api/v1/auth`)
+- [x] `POST /register` - 회원가입 (JWT 토큰 반환)
+- [x] `POST /login` - 로그인 (JWT 토큰 반환)
+- [x] `GET /me` - 현재 사용자 정보 조회
+- [x] `POST /logout` - 로그아웃 (클라이언트 토큰 삭제)
+
+#### 👤 사용자 API (`/api/v1/users`)
+- [x] `GET /profile` - 내 프로필 조회
+- [x] `PUT /profile` - 내 프로필 수정
+- [x] `GET /{user_id}` - 특정 사용자 정보 조회
+
+#### 🎓 멘토 API (`/api/v1/mentors`)
+- [x] `GET /` - 멘토 목록 조회 (필터링 및 페이징)
+- [x] `GET /{mentor_id}` - 특정 멘토 정보 조회
+- [x] `POST /profile` - 멘토 프로필 생성/수정
+- [x] `GET /profile` - 내 멘토 프로필 조회
+
+#### 🤝 매칭 API (`/api/v1/matches`)
+- [x] `POST /request` - 매칭 요청 생성 (멘티만 가능)
+- [x] `GET /` - 내 매칭 요청 목록 조회
+- [x] `PUT /{match_id}/accept` - 매칭 요청 수락 (멘토만 가능)
+- [x] `PUT /{match_id}/reject` - 매칭 요청 거절 (멘토만 가능)
+- [x] `DELETE /{match_id}` - 매칭 요청 취소
+
+### 🛡️ 구현된 보안 기능
+- [x] **JWT 인증**: 토큰 기반 인증 시스템
+- [x] **비밀번호 해싱**: bcrypt를 사용한 안전한 비밀번호 저장
+- [x] **역할 기반 접근 제어**: 멘토/멘티 권한 분리
+- [x] **토큰 검증**: 모든 보호된 엔드포인트에서 토큰 검증
+
+### 📊 데이터베이스 모델
+- [x] **User**: 사용자 기본 정보 (이메일, 이름, 역할, 스킬 등)
+- [x] **MentorProfile**: 멘토 상세 정보 (경력, 전문분야, 가용성)
+- [x] **MenteeProfile**: 멘티 상세 정보 (학습 목표, 선호 멘토)
+- [x] **Match**: 매칭 요청 및 상태 관리
+
+### 🔍 API 문서
+- **Swagger UI**: `http://localhost:8000/docs`
+- **ReDoc**: `http://localhost:8000/redoc`
+- **OpenAPI JSON**: `http://localhost:8000/openapi.json`
+
+---
