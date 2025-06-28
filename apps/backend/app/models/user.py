@@ -1,11 +1,12 @@
 """
 사용자 관련 SQLAlchemy 모델
 """
-from sqlalchemy import Boolean, Integer, String, Text, ARRAY
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy import Boolean, Integer, String, Text, Column, Enum as SQLEnum
+from sqlalchemy.orm import relationship
 from enum import Enum
 
-from app.models.base import Base, TimestampMixin
+from app.database import Base
+from app.models.base import TimestampMixin
 
 class UserRole(str, Enum):
     """사용자 역할"""
@@ -17,37 +18,37 @@ class User(Base, TimestampMixin):
     """사용자 모델"""
     __tablename__ = "users"
     
-    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
-    email: Mapped[str] = mapped_column(String(255), unique=True, index=True, nullable=False)
-    name: Mapped[str] = mapped_column(String(100), nullable=False)
-    password_hash: Mapped[str] = mapped_column(String(255), nullable=False)
-    role: Mapped[UserRole] = mapped_column(String(20), nullable=False)
-    bio: Mapped[str | None] = mapped_column(Text, nullable=True)
-    skills: Mapped[list[str] | None] = mapped_column(ARRAY(String), nullable=True)
-    interests: Mapped[list[str] | None] = mapped_column(ARRAY(String), nullable=True)
-    is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
+    id = Column(Integer, primary_key=True, index=True)
+    email = Column(String(255), unique=True, index=True, nullable=False)
+    name = Column(String(100), nullable=False)
+    password_hash = Column(String(255), nullable=False)
+    role = Column(SQLEnum(UserRole), nullable=False)
+    bio = Column(Text, nullable=True)
+    skills = Column(Text, nullable=True)  # JSON string으로 저장
+    interests = Column(Text, nullable=True)  # JSON string으로 저장
+    is_active = Column(Boolean, default=True, nullable=False)
     
     # 관계 설정
-    mentor_profile: Mapped["MentorProfile"] = relationship(
+    mentor_profile = relationship(
         "MentorProfile", 
         back_populates="user",
         uselist=False
     )
-    mentee_profile: Mapped["MenteeProfile"] = relationship(
+    mentee_profile = relationship(
         "MenteeProfile",
         back_populates="user", 
         uselist=False
     )
     
     # 매칭 관계 (멘티로서 보낸 요청)
-    sent_match_requests: Mapped[list["Match"]] = relationship(
+    sent_match_requests = relationship(
         "Match",
         foreign_keys="Match.mentee_id",
         back_populates="mentee"
     )
     
     # 매칭 관계 (멘토로서 받은 요청)
-    received_match_requests: Mapped[list["Match"]] = relationship(
+    received_match_requests = relationship(
         "Match", 
         foreign_keys="Match.mentor_id",
         back_populates="mentor"

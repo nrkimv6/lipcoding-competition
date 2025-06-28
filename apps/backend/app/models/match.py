@@ -1,12 +1,13 @@
 """
 매칭 관련 SQLAlchemy 모델
 """
-from sqlalchemy import Integer, String, Text, ForeignKey, DateTime
-from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy import Integer, String, Text, ForeignKey, DateTime, Column, Enum as SQLEnum
+from sqlalchemy.orm import relationship
 from enum import Enum
 from datetime import datetime
 
-from app.models.base import Base, TimestampMixin
+from app.database import Base
+from app.models.base import TimestampMixin
 
 class MatchStatus(str, Enum):
     """매칭 상태"""
@@ -20,33 +21,36 @@ class Match(Base, TimestampMixin):
     """매칭 모델"""
     __tablename__ = "matches"
     
-    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
-    mentor_id: Mapped[int] = mapped_column(
+    id = Column(Integer, primary_key=True, index=True)
+    mentor_id = Column(
         Integer,
         ForeignKey("users.id", ondelete="CASCADE"),
         nullable=False
     )
-    mentee_id: Mapped[int] = mapped_column(
+    mentee_id = Column(
         Integer, 
         ForeignKey("users.id", ondelete="CASCADE"),
         nullable=False
     )
-    status: Mapped[MatchStatus] = mapped_column(String(20), default=MatchStatus.PENDING, nullable=False)
-    message: Mapped[str | None] = mapped_column(Text, nullable=True)  # 매칭 요청 메시지
-    response_message: Mapped[str | None] = mapped_column(Text, nullable=True)  # 멘토의 응답 메시지
-    matched_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)  # 매칭 성사 시간
+    status = Column(SQLEnum(MatchStatus), default=MatchStatus.PENDING, nullable=False)
+    message = Column(Text, nullable=True)  # 매칭 요청 메시지
+    response_message = Column(Text, nullable=True)  # 멘토의 응답 메시지
+    matched_at = Column(DateTime(timezone=True), nullable=True)  # 매칭 성사 시간
     
     # 관계 설정
-    mentor: Mapped["User"] = relationship(
+    mentor = relationship(
         "User",
         foreign_keys=[mentor_id],
         back_populates="received_match_requests"
     )
-    mentee: Mapped["User"] = relationship(
+    mentee = relationship(
         "User", 
         foreign_keys=[mentee_id],
         back_populates="sent_match_requests"
     )
+    
+    def __repr__(self):
+        return f"<Match(id={self.id}, mentor_id={self.mentor_id}, mentee_id={self.mentee_id}, status='{self.status}')>"
     
     def __repr__(self):
         return f"<Match(id={self.id}, mentor_id={self.mentor_id}, mentee_id={self.mentee_id}, status='{self.status}')>"
